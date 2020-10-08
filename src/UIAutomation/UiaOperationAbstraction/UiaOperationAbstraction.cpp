@@ -964,6 +964,11 @@ namespace UiaOperationAbstraction
     {
     }
 
+    UiaBool::UiaBool(const UiaBool& other) : UiaBool(false /* value */)
+    {
+        *this = other;
+    }
+
     UiaBool::operator BOOL() const
     {
         return std::get<BOOL>(m_member);
@@ -1033,6 +1038,11 @@ namespace UiaOperationAbstraction
     UiaInt::UiaInt(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsInt())
     {
+    }
+
+    UiaInt::UiaInt(const UiaInt& other) : UiaInt(0 /* value */)
+    {
+        *this = other;
     }
 
     UiaInt::operator int() const
@@ -1124,6 +1134,11 @@ namespace UiaOperationAbstraction
     {
     }
 
+    UiaUint::UiaUint(const UiaUint& other) : UiaUint(0 /* value */)
+    {
+        *this = other;
+    }
+
     UiaUint::operator unsigned int() const
     {
         return std::get<unsigned int>(m_member);
@@ -1201,6 +1216,11 @@ namespace UiaOperationAbstraction
     {
     }
 
+    UiaDouble::UiaDouble(const UiaDouble& other) : UiaDouble(0.0 /* value */)
+    {
+        *this = other;
+    }
+
     UiaDouble::operator double() const
     {
         return std::get<double>(m_member);
@@ -1276,6 +1296,11 @@ namespace UiaOperationAbstraction
     UiaChar::UiaChar(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
         UiaTypeBase(remoteValue.AsChar())
     {
+    }
+
+    UiaChar::UiaChar(const UiaChar& other) : UiaChar(L'\0' /* value */)
+    {
+        *this = other;
     }
 
     UiaChar::operator wchar_t() const
@@ -1448,6 +1473,10 @@ namespace UiaOperationAbstraction
         return localVal[index];
     }
 
+    UiaPoint::UiaPoint() : UiaPoint(winrt::Windows::Foundation::Point{ 0.0f /* X */, 0.0f /* Y */ })
+    {
+    }
+
     UiaPoint::UiaPoint(POINT point):
         UiaTypeBase(winrt::Windows::Foundation::Point(static_cast<float>(point.x), static_cast<float>(point.y)))
     {
@@ -1468,6 +1497,11 @@ namespace UiaOperationAbstraction
     UiaPoint::UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsPoint())
     {
+    }
+
+    UiaPoint::UiaPoint(const UiaPoint& other) : UiaPoint()
+    {
+        *this = other;
     }
 
     UiaPoint::operator winrt::Windows::Foundation::Point() const
@@ -1524,6 +1558,10 @@ namespace UiaOperationAbstraction
         return (lhsLocalPoint.X != rhsLocalPoint.X) || (lhsLocalPoint.Y != rhsLocalPoint.Y);
     }
 
+    UiaRect::UiaRect() : UiaRect(winrt::Windows::Foundation::Rect{ 0.0f /* X */, 0.0f /* Y */, 0.0f /* Width */, 0.0f /* Height */ })
+    {
+    }
+
     UiaRect::UiaRect(RECT rect):
         UiaTypeBase(ConvertRect(rect))
     {
@@ -1544,6 +1582,11 @@ namespace UiaOperationAbstraction
     UiaRect::UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsRect())
     {
+    }
+
+    UiaRect::UiaRect(const UiaRect& other) : UiaRect()
+    {
+        *this = other;
     }
 
     UiaRect::operator winrt::Windows::Foundation::Rect() const
@@ -1680,9 +1723,20 @@ namespace UiaOperationAbstraction
     {
     }
 
+    UiaHwnd::UiaHwnd(const UiaHwnd& other) : UiaHwnd(static_cast<UIA_HWND>(nullptr) /* hwnd */)
+    {
+        *this = other;
+    }
+
     UiaHwnd::operator UIA_HWND() const
     {
         return std::get<UIA_HWND>(m_member);
+    }
+
+    UiaHwnd& UiaHwnd::operator=(const UiaHwnd& other)
+    {
+        AssignCopyTo<UiaHwnd>(this->m_member, other.m_member);
+        return *this;
     }
 
     UiaBool UiaHwnd::operator==(const UiaHwnd& rhs) const

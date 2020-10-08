@@ -561,7 +561,7 @@ namespace UiaOperationAbstraction
         UiaBool(BOOL value);
         UiaBool(winrt::Microsoft::UI::UIAutomation::AutomationRemoteBool remoteValue);
         explicit UiaBool(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaBool(const UiaBool&) = default;
+        UiaBool(const UiaBool& other);
 
         operator BOOL() const;
         operator bool() const;
@@ -608,7 +608,7 @@ namespace UiaOperationAbstraction
         UiaInt(int value);
         UiaInt(winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt remoteValue);
         explicit UiaInt(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaInt(const UiaInt&) = default;
+        UiaInt(const UiaInt& other);
 
         operator int() const;
 
@@ -667,7 +667,7 @@ namespace UiaOperationAbstraction
         UiaUint(int value);
         UiaUint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteUint remoteValue);
         explicit UiaUint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaUint(const UiaUint&) = default;
+        UiaUint(const UiaUint& other);
 
         operator unsigned int() const;
 
@@ -749,7 +749,7 @@ namespace UiaOperationAbstraction
         UiaDouble(double value);
         UiaDouble(winrt::Microsoft::UI::UIAutomation::AutomationRemoteDouble remoteValue);
         explicit UiaDouble(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaDouble(const UiaDouble&) = default;
+        UiaDouble(const UiaDouble& other);
 
         operator double() const;
 
@@ -806,7 +806,7 @@ namespace UiaOperationAbstraction
         UiaChar(wchar_t value);
         UiaChar(winrt::Microsoft::UI::UIAutomation::AutomationRemoteChar remoteValue);
         explicit UiaChar(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaChar(const UiaChar&) = default;
+        UiaChar(const UiaChar& other);
 
         operator wchar_t() const;
 
@@ -877,7 +877,10 @@ namespace UiaOperationAbstraction
         {
         }
 
-        UiaEnum(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>&) = default;
+        UiaEnum(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>& other) : UiaEnum(ComEnumT{})
+        {
+            *this = other;
+        }
 
         void ToRemote()
         {
@@ -1007,11 +1010,12 @@ namespace UiaOperationAbstraction
         winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint>
     {
     public:
+        UiaPoint();
         UiaPoint(POINT point);
         UiaPoint(winrt::Windows::Foundation::Point point);
         UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint remotePoint);
         explicit UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaPoint(const UiaPoint&) = default;
+        UiaPoint(const UiaPoint& other);
 
         operator winrt::Windows::Foundation::Point() const;
         operator POINT() const;
@@ -1028,10 +1032,12 @@ namespace UiaOperationAbstraction
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteRect>
     {
     public:
+        UiaRect();
         UiaRect(RECT rect);
         UiaRect(winrt::Windows::Foundation::Rect rect);
         UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteRect remoteRect);
         explicit UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
+        UiaRect(const UiaRect& other);
 
         operator winrt::Windows::Foundation::Rect() const;
         operator RECT() const;
@@ -1057,9 +1063,11 @@ namespace UiaOperationAbstraction
         UiaHwnd(UIA_HWND hwnd);
         UiaHwnd(winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt remoteHwnd);
         explicit UiaHwnd(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaHwnd(const UiaHwnd&) = default;
+        UiaHwnd(const UiaHwnd& other);
 
         operator UIA_HWND() const;
+
+        UiaHwnd& operator=(const UiaHwnd& other);
 
         UiaBool operator==(const UiaHwnd& rhs) const;
         UiaBool operator!=(const UiaHwnd& rhs) const;
