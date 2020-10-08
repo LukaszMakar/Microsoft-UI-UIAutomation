@@ -418,6 +418,38 @@ namespace UiaOperationAbstractionTests
                 Assert::AreEqual(static_cast<double>(boundingRect.Width), width);
                 Assert::AreEqual(static_cast<double>(boundingRect.Height), height);
             }
+
+            winrt::Windows::Foundation::Rect rect1{};
+            winrt::Windows::Foundation::Rect rect2{};
+            int int1 = 0;
+            int int2 = 0;
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                UiaInt remoteInt1{ 5 };
+                //UiaInt remoteInt2{ 0 };
+                UiaInt remoteInt2 = remoteInt1;
+                remoteInt1 = 7;
+
+                UiaOperationAbstraction::UiaRect remoteRect1{ winrt::Windows::Foundation::Rect{ 5, 5, 5, 5 } };
+                //UiaOperationAbstraction::UiaRect remoteRect2{ winrt::Windows::Foundation::Rect{ 0, 0, 0, 0 } };
+                auto remoteRect2 = remoteRect1;
+                remoteRect1 = UiaOperationAbstraction::UiaRect{ winrt::Windows::Foundation::Rect{ 0, 0, 0, 0 } };
+
+                operationScope.BindResult(remoteRect1);
+                operationScope.BindResult(remoteRect2);
+                operationScope.BindResult(remoteInt1);
+                operationScope.BindResult(remoteInt2);
+                operationScope.Resolve();
+
+                rect1 = remoteRect1;
+                rect2 = remoteRect2;
+                int1 = remoteInt1;
+                int2 = remoteInt2;
+            }
         }
 
         TEST_METHOD(RectDimensionsLocal)

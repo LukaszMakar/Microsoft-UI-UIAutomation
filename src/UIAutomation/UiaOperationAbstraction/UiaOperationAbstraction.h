@@ -1032,7 +1032,6 @@ namespace UiaOperationAbstraction
         UiaRect(winrt::Windows::Foundation::Rect rect);
         UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteRect remoteRect);
         explicit UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
-        UiaRect(const UiaRect&) = default;
 
         operator winrt::Windows::Foundation::Rect() const;
         operator RECT() const;
