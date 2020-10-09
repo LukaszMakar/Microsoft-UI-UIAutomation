@@ -493,10 +493,7 @@ namespace UiaOperationAbstractionTests
             const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Ask for a few different values, create copies of those values and then overwrite the original
-            // variables.
-            //
-            // Return original variables and copies, and check that the copies retained the original values
-            // (from before the overwrites).
+            // variables to show that the copies have not been affected by the overwrites.
             //
             // Do it for a few different classes of types:
             // -> Numeric
