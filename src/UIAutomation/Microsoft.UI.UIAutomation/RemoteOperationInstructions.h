@@ -149,6 +149,8 @@ enum class InstructionType
     CacheRequestAddPattern = 0x4f,
     PopulateCache = 0x50,
 
+    GetMetadataValue = 0x52,
+
     // UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValues.g.h"
 };
@@ -237,6 +239,7 @@ constexpr std::array c_supportedInstructions =
     InstructionType::CacheRequestAddProperty,
     InstructionType::CacheRequestAddPattern,
     InstructionType::PopulateCache,
+    InstructionType::GetMetadataValue,
 
     // Auto-generated UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValuesArray.g.h"
@@ -910,6 +913,16 @@ struct PopulateCache
     OperandId cacheRequestId;
 };
 
+struct GetMetadataValue
+{
+    constexpr static InstructionType type = InstructionType::GetMetadataValue;
+
+    OperandId resultId;
+    OperandId targetId;
+    OperandId propertyId;
+    OperandId metadataId;
+};
+
 #include "RemoteOperationInstructions.g.h"
 
 using Instruction = std::variant<
@@ -1025,7 +1038,9 @@ using Instruction = std::variant<
     IsStringMap,
     IsElement,
     IsGuid,
-    IsCacheRequest
+    IsCacheRequest,
+
+    GetMetadataValue
 
 #include "RemoteOperationInstructionsVariantParams.g.h"
     >;

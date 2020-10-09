@@ -185,6 +185,8 @@ namespace Microsoft.UI.UIAutomation
         [default_overload] AutomationRemoteAnyObject GetPropertyValue(AutomationRemotePropertyId propertyId);
         AutomationRemoteAnyObject GetPropertyValue(AutomationRemotePropertyId propertyId, AutomationRemoteBool ignoreDefaultValue);
 
+        //AutomationRemoteAnyObject GetMetadataValue(Int32 targetId, AutomationRemoteMetadataId);
+
         AutomationRemoteElement GetParentElement();
         AutomationRemoteElement GetFirstChildElement();
         AutomationRemoteElement GetLastChildElement();

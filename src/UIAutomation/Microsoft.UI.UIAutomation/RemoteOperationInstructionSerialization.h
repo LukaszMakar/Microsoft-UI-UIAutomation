@@ -112,6 +112,8 @@ private:
     void Write(const bytecode::PopulateCache&);
     void Write(const bytecode::LookupId&);
     void Write(const bytecode::LookupGuid&);
+    void Write(const bytecode::GetMetadataValue&);
+
     void Write(const bytecode::GetterBase&);
 #include "RemoteOperationInstructionSerializerMethods.g.h"
 
