@@ -418,38 +418,6 @@ namespace UiaOperationAbstractionTests
                 Assert::AreEqual(static_cast<double>(boundingRect.Width), width);
                 Assert::AreEqual(static_cast<double>(boundingRect.Height), height);
             }
-
-            winrt::Windows::Foundation::Rect rect1{};
-            winrt::Windows::Foundation::Rect rect2{};
-            int int1 = 0;
-            int int2 = 0;
-            {
-                auto operationScope = UiaOperationScope::StartNew();
-
-                UiaElement displayElement{ focusedElement };
-                operationScope.BindInput(displayElement);
-
-                UiaInt remoteInt1{ 5 };
-                //UiaInt remoteInt2{ 0 };
-                UiaInt remoteInt2 = remoteInt1;
-                remoteInt1 = 7;
-
-                UiaOperationAbstraction::UiaRect remoteRect1{ winrt::Windows::Foundation::Rect{ 5, 5, 5, 5 } };
-                //UiaOperationAbstraction::UiaRect remoteRect2{ winrt::Windows::Foundation::Rect{ 0, 0, 0, 0 } };
-                auto remoteRect2 = remoteRect1;
-                remoteRect1 = UiaOperationAbstraction::UiaRect{ winrt::Windows::Foundation::Rect{ 0, 0, 0, 0 } };
-
-                operationScope.BindResult(remoteRect1);
-                operationScope.BindResult(remoteRect2);
-                operationScope.BindResult(remoteInt1);
-                operationScope.BindResult(remoteInt2);
-                operationScope.Resolve();
-
-                rect1 = remoteRect1;
-                rect2 = remoteRect2;
-                int1 = remoteInt1;
-                int2 = remoteInt2;
-            }
         }
 
         TEST_METHOD(RectDimensionsLocal)
@@ -510,6 +478,96 @@ namespace UiaOperationAbstractionTests
         TEST_METHOD(ArrayEqualityComparisonRemoteTest)
         {
             ArrayEqualityComparisonTest(true);
+        }
+
+        void CopyValueTest(const bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Ask for a few different values, create copies of those values and then overwrite the original
+            // variables.
+            //
+            // Return original variables and copies, and check that the copies retained the original values
+            // (from before the overwrites).
+            //
+            // Do it for a few different classes of types:
+            // -> Numeric
+            {
+                // Define two values that should work as "original" and "overwrite".
+                constexpr int originalValue = 5;
+                constexpr int overwriteValue = 7;
+
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the focused element to contextualize the operation to execute.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create one variable with a value. Create a copy of that variable and then change the first
+                // variable.
+                //
+                // The value of the copy should remain unchanged.
+                UiaInt originalValueSource{ originalValue };
+                UiaInt originalValueCopy = originalValueSource;
+                originalValueSource = overwriteValue;
+
+                // Resolve the values after the operations.
+                operationScope.BindResult(originalValueSource);
+                operationScope.BindResult(originalValueCopy);
+                operationScope.Resolve();
+
+                // Ensure that the returned values are the expected values.
+                Assert::AreEqual(overwriteValue, static_cast<int>(originalValueSource));
+                Assert::AreEqual(originalValue, static_cast<int>(originalValueCopy));
+            }
+
+            // -> Rectangle
+            {
+                // Define two values that should work as "original" and "overwrite".
+                constexpr winrt::Windows::Foundation::Rect originalValue{ 5 /* X */, 5 /* Y */, 5 /* Width */, 5 /* Height */ };
+                constexpr winrt::Windows::Foundation::Rect overwriteValue{ 7 /* X */, 7 /* Y */, 7 /* Width */, 7 /* Height */ };
+
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the focused element to contextualize the operation to execute.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create one variable with a value. Create a copy of that variable and then change the first
+                // variable.
+                //
+                // The value of the copy should remain unchanged.
+                UiaOperationAbstraction::UiaRect originalValueSource{ originalValue };
+                UiaOperationAbstraction::UiaRect originalValueCopy = originalValueSource;
+                originalValueSource = overwriteValue;
+
+                // Resolve the values after the operations.
+                operationScope.BindResult(originalValueSource);
+                operationScope.BindResult(originalValueCopy);
+                operationScope.Resolve();
+
+                // Ensure that the returned values are the expected values.
+                Assert::AreEqual(overwriteValue, static_cast<winrt::Windows::Foundation::Rect>(originalValueSource));
+                Assert::AreEqual(originalValue, static_cast<winrt::Windows::Foundation::Rect>(originalValueCopy));
+            }
+        }
+
+        TEST_METHOD(CopyValueLocal)
+        {
+            CopyValueTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(CopyValueRemote)
+        {
+            CopyValueTest(true /* useRemoteOperations */);
         }
     };
 }

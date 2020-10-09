@@ -33,6 +33,17 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
     {
         return str.c_str();
     }
+
+#pragma warning(push)
+#pragma warning(disable: 4505)
+    template<>
+    std::wstring ToString(const winrt::Windows::Foundation::Rect& rect)
+#pragma warning(pop)
+    {
+        std::wstringstream ss;
+        ss << L"Rect{ " << rect.X << L", " << rect.Y << L", " << rect.Width << L", " << rect.Height << L" }";
+        return ss.str();
+    }
 }
 
 template<class... Args>
