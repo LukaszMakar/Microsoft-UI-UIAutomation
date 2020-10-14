@@ -512,7 +512,7 @@ namespace UiaOperationAbstraction
         }
 
         template<class T>
-        std::shared_ptr<T> ReturnOrMakeSharedPtr(const std::shared_ptr<T>& ptr)
+        std::shared_ptr<T> GetOrMakeSharedPtr(const std::shared_ptr<T>& ptr)
         {
             return (ptr ? ptr : std::make_shared<T>());
         }
@@ -1221,7 +1221,7 @@ namespace UiaOperationAbstraction
             ToRemote();
         }
 
-        UiaArray(const std::shared_ptr<std::vector<ItemLocalType>>& value) : UiaTypeBase(details::ReturnOrMakeSharedPtr(value))
+        UiaArray(const std::shared_ptr<std::vector<ItemLocalType>>& value) : UiaTypeBase(details::GetOrMakeSharedPtr(value))
         {
             ToRemote();
         }
@@ -1474,7 +1474,7 @@ namespace UiaOperationAbstraction
             ToRemote();
         }
 
-        UiaStringMap(const std::shared_ptr<std::map<std::wstring, ItemLocalType>>& value) : UiaTypeBase(details::ReturnOrMakeSharedPtr(value))
+        UiaStringMap(const std::shared_ptr<std::map<std::wstring, ItemLocalType>>& value) : UiaTypeBase(details::GetOrMakeSharedPtr(value))
         {
             ToRemote();
         }
@@ -1800,7 +1800,7 @@ namespace UiaOperationAbstraction
             ToRemote();
         }
 
-        UiaTuple(const std::shared_ptr<TupleLocalType>& value) : UiaTypeBase(details::ReturnOrMakeSharedPtr(value))
+        UiaTuple(const std::shared_ptr<TupleLocalType>& value) : UiaTypeBase(details::GetOrMakeSharedPtr(value))
         {
             ToRemote();
         }
@@ -1859,9 +1859,9 @@ namespace UiaOperationAbstraction
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
 
-        operator std::shared_ptr<std::tuple<typename ItemWrapperType::LocalType...>>() const
+        operator std::shared_ptr<TupleLocalType>() const
         {
-            return std::get<std::shared_ptr<std::tuple<typename ItemWrapperType::LocalType...>>>(m_member);
+            return std::get<std::shared_ptr<TupleLocalType>>(m_member);
         }
 
         TupleLocalType& operator*()
@@ -1888,7 +1888,6 @@ namespace UiaOperationAbstraction
 
             auto localTuple = std::get<LocalType>(m_member);
             auto localRhsTuple = std::get<LocalType>(rhs.m_member);
-
             return *localTuple == *localRhsTuple;
         }
 
@@ -1960,10 +1959,10 @@ namespace UiaOperationAbstraction
 
     private:
         template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
-        void SetTupleWrapperItems(ItemWrapperType item, ItemWrapperTypes... items)
+        void SetTupleWrapperItems(ItemWrapperType&& item, ItemWrapperTypes&&... items)
         {
-            SetAt<I>(std::move(item));
-            SetTupleWrapperItems<I + 1>(items...);
+            SetAt<I>(std::forward<ItemWrapperType>(item));
+            SetTupleWrapperItems<I + 1>(std::forward<ItemWrapperTypes>(items)...);
         }
 
         template<std::size_t I>
